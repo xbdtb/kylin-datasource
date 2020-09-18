@@ -1,0 +1,34 @@
+{
+  "name": "kylin-datasource",
+  "description": "Grafana Apache Kylin datasource",
+  "main": "index.js",
+  "version": "0.2.1",
+  "scripts": {
+    "build": "grafana-toolkit plugin:build",
+    "test": "grafana-toolkit plugin:test",
+    "dev": "grafana-toolkit plugin:dev",
+    "watch": "grafana-toolkit plugin:dev --watch",
+    "prettier:check": "prettier --list-different \"**/*.{ts,tsx,scss}\"",
+    "prettier:write": "prettier --list-different \"**/*.{ts,tsx,scss}\" --write"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/xbdtb/kylin-datasource.git"
+  },
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/xbdtb/kylin-datasource/issues"
+  },
+  "engineStrict": true,
+  "devDependencies": {
+    "@grafana/data": "^7.1.5",
+    "@grafana/runtime": "^7.1.5",
+    "@grafana/toolkit": "^7.1.5",
+    "@grafana/ui": "^7.1.5",
+    "@types/lodash": "^4.14.160"
+  },
+  "dependencies": {
+    "lodash": "^4.17.20"
+  },
+  "homepage": "https://github.com/xbdtb/kylin-datasource#readme"
+}
