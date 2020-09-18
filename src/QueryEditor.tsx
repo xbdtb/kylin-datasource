@@ -21,6 +21,13 @@ export const QueryEditor: ComponentType<Props> = ({ datasource, onChange, onRunQ
   );
   const [metric, setMetric] = React.useState<SelectableValue<string>>();
   const [data, setData] = React.useState(query.data ?? '');
+  let project = '';
+  let sql = '';
+  if (!!data) {
+    const obj = JSON.parse(data);
+    project = obj.project;
+    sql = obj.sql;
+  }
 
   React.useEffect(() => {
     if (formatAs.value === undefined) {
@@ -81,6 +88,20 @@ export const QueryEditor: ComponentType<Props> = ({ datasource, onChange, onRunQ
       </div>
       <div className="gf-form gf-form--alt">
         <div className="gf-form-label">
+          <Label>Project</Label>
+        </div>
+        <div className="gf-form">
+          <CodeEditor
+            width="200px"
+            height="32px"
+            language="text"
+            showLineNumbers={true}
+            showMiniMap={data.length > 100}
+            value={project}
+            onBlur={value => setData(JSON.stringify({ project: value, sql: sql }))}
+          />
+        </div>
+        <div className="gf-form-label">
           <Label>SQL</Label>
         </div>
         <div className="gf-form">
@@ -90,8 +111,8 @@ export const QueryEditor: ComponentType<Props> = ({ datasource, onChange, onRunQ
             language="sql"
             showLineNumbers={true}
             showMiniMap={data.length > 100}
-            value={JSON.parse(data).sql}
-            onBlur={value => setData(JSON.stringify({ sql: value }))}
+            value={sql}
+            onBlur={value => setData(JSON.stringify({ project: project, sql: value }))}
           />
         </div>
       </div>

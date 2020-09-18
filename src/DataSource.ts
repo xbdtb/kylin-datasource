@@ -44,10 +44,9 @@ export class DataSource extends DataSourceApi<GrafanaQuery, GenericOptions> {
     request.adhocFilters = getTemplateSrv().getAdhocFilters(this.name);
 
     options.scopedVars = { ...this.getVariables(), ...options.scopedVars };
-
     return this.doRequest({
-      url: `${this.url}/query`,
-      data: request,
+      url: `${this.url}/api/query`,
+      data: request.targets[0].data,
       method: 'POST',
     });
   }
@@ -70,16 +69,17 @@ export class DataSource extends DataSourceApi<GrafanaQuery, GenericOptions> {
   }
 
   metricFindQuery(query: string, options?: any, type?: string): Promise<MetricFindValue[]> {
-    const interpolated = {
-      type,
-      target: getTemplateSrv().replace(query, undefined, 'regex'),
-    };
+    return Promise.resolve(this.mapToTextValue({ data: ['default'] }));
+    // const interpolated = {
+    //   type,
+    //   target: getTemplateSrv().replace(query, undefined, 'regex'),
+    // };
 
-    return this.doRequest({
-      url: `${this.url}/search`,
-      data: interpolated,
-      method: 'POST',
-    }).then(this.mapToTextValue);
+    // return this.doRequest({
+    //   url: `${this.url}/search`,
+    //   data: interpolated,
+    //   method: 'POST',
+    // }).then(this.mapToTextValue);
   }
 
   getTagKeys(options?: any): Promise<MetricFindTagKeys[]> {
