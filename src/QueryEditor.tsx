@@ -1,5 +1,5 @@
 import { QueryEditorProps, SelectableValue } from '@grafana/data';
-import { AsyncSelect, CodeEditor, Label, Select } from '@grafana/ui';
+import { AsyncSelect, CodeEditor, Label, Select} from '@grafana/ui';
 import { find } from 'lodash';
 
 import React, { ComponentType } from 'react';
