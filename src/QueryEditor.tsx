@@ -85,15 +85,13 @@ export const QueryEditor: ComponentType<Props> = ({ datasource, onChange, onRunQ
             }}
           />
         </div>
-      </div>
-      <div className="gf-form gf-form--alt">
         <div className="gf-form-label">
           <Label>Project</Label>
         </div>
         <div className="gf-form">
           <CodeEditor
             width="200px"
-            height="32px"
+            height="20px"
             language="text"
             showLineNumbers={true}
             showMiniMap={data.length > 100}
@@ -101,12 +99,14 @@ export const QueryEditor: ComponentType<Props> = ({ datasource, onChange, onRunQ
             onBlur={value => setData(JSON.stringify({ project: value, sql: sql }))}
           />
         </div>
+      </div>
+      <div className="gf-form gf-form--alt">
         <div className="gf-form-label">
           <Label>SQL</Label>
         </div>
         <div className="gf-form">
           <CodeEditor
-            width="500px"
+            width="800px"
             height="100px"
             language="sql"
             showLineNumbers={true}

@@ -48,7 +48,17 @@ export class DataSource extends DataSourceApi<GrafanaQuery, GenericOptions> {
       url: `${this.url}/api/query`,
       data: request.targets[0].data,
       method: 'POST',
-    });
+    }).then(this.convertResponse);
+  }
+
+  convertResponse(response: any) {
+    const datapoints = response.data.results;
+    const target = response.data.columnMetas[0].label;
+    // for (let i = 0; i < data.length; i++) {
+    //   data[i][0] = parseInt(data[i][0], 10);
+    // }
+    response.data = [{ datapoints: datapoints, target: target }];
+    return response;
   }
 
   testDatasource(): Promise<any> {
