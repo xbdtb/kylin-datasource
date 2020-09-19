@@ -33,7 +33,7 @@ export class DataSource extends DataSourceApi<GrafanaQuery, GenericOptions> {
     }
   }
 
-  query(options: QueryRequest): Promise<DataQueryResponse> {
+  async query(options: QueryRequest): Promise<DataQueryResponse> {
     const request = this.processTargets(options);
 
     if (request.targets.length === 0) {
@@ -44,21 +44,22 @@ export class DataSource extends DataSourceApi<GrafanaQuery, GenericOptions> {
     request.adhocFilters = getTemplateSrv().getAdhocFilters(this.name);
 
     options.scopedVars = { ...this.getVariables(), ...options.scopedVars };
-    return this.doRequest({
-      url: `${this.url}/api/query`,
-      data: request.targets[0].data,
-      method: 'POST',
-    }).then(this.convertResponse);
-  }
-
-  convertResponse(response: any) {
-    const datapoints = response.data.results;
-    const target = response.data.columnMetas[0].label;
-    // for (let i = 0; i < data.length; i++) {
-    //   data[i][0] = parseInt(data[i][0], 10);
-    // }
-    response.data = [{ datapoints: datapoints, target: target }];
-    return response;
+    const resultData: any = [];
+    for (let i = 0; i < request.targets.length; i++) {
+      const response = await this.doRequest({
+        url: `${this.url}/api/query`,
+        data: request.targets[i].data,
+        method: 'POST',
+      });
+      for (let j = 0; j < response.data.results.length; j++) {
+        response.data.results[j][0] = parseInt(response.data.results[j][0], 10);
+      }
+      resultData.push({
+        datapoints: response.data.results,
+        target: response.data.columnMetas[0].label,
+      });
+    }
+    return { data: resultData };
   }
 
   testDatasource(): Promise<any> {
@@ -79,7 +80,7 @@ export class DataSource extends DataSourceApi<GrafanaQuery, GenericOptions> {
   }
 
   metricFindQuery(query: string, options?: any, type?: string): Promise<MetricFindValue[]> {
-    return Promise.resolve(this.mapToTextValue({ data: ['default'] }));
+    return Promise.resolve(this.mapToTextValue({ data: ['Auto'] }));
     // const interpolated = {
     //   type,
     //   target: getTemplateSrv().replace(query, undefined, 'regex'),
