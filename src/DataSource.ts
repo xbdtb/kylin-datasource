@@ -46,15 +46,22 @@ export class DataSource extends DataSourceApi<GrafanaQuery, GenericOptions> {
     options.scopedVars = { ...this.getVariables(), ...options.scopedVars };
     const resultData: any = [];
     for (let i = 0; i < request.targets.length; i++) {
+      const data: any = request.targets[i].data;
+      let sql = data.sql.replace('$__timeFilter', `${data.timeField} BETWEEN '${options.range.from.format('YYYY-MM-DD HH:mm:ss')}' AND '${options.range.to.format('YYYY-MM-DD HH:mm:ss')}'`);
+      const body = {
+        project: data.project,
+        sql: sql,
+      }
       const response = await this.doRequest({
         url: `${this.url}/api/query`,
-        data: request.targets[i].data,
+        data: body,
         method: 'POST',
       });
       for (let j = 0; j < response.data.results.length; j++) {
         response.data.results[j][0] = parseInt(response.data.results[j][0], 10);
       }
       resultData.push({
+        refId: request.targets[i].refId,
         datapoints: response.data.results,
         target: response.data.columnMetas[0].label,
       });

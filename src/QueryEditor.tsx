@@ -1,5 +1,5 @@
 import { QueryEditorProps, SelectableValue } from '@grafana/data';
-import { AsyncSelect, CodeEditor, Label, Select} from '@grafana/ui';
+import { AsyncSelect, CodeEditor, Label, Select } from '@grafana/ui';
 import { find } from 'lodash';
 
 import React, { ComponentType } from 'react';
@@ -22,11 +22,21 @@ export const QueryEditor: ComponentType<Props> = ({ datasource, onChange, onRunQ
   const [metric, setMetric] = React.useState<SelectableValue<string>>();
   const [data, setData] = React.useState(query.data ?? '');
   let project = '';
+  let timeField = '';
   let sql = '';
   if (!!data) {
     const obj = JSON.parse(data);
     project = obj.project;
+    timeField = obj.timeField;
     sql = obj.sql;
+  }
+
+  function changeData(changed: any) {
+    let obj = {};
+    if (!!data) {
+      obj = JSON.parse(data);
+    }
+    setData(JSON.stringify({...obj, ...changed}));
   }
 
   React.useEffect(() => {
@@ -86,18 +96,28 @@ export const QueryEditor: ComponentType<Props> = ({ datasource, onChange, onRunQ
           />
         </div>
         <div className="gf-form-label">
-          <Label>Project</Label>
+          Project
         </div>
         <div className="gf-form">
-          <CodeEditor
-            width="200px"
-            height="20px"
-            language="text"
-            showLineNumbers={true}
-            showMiniMap={data.length > 100}
-            value={project}
-            onBlur={value => setData(JSON.stringify({ project: value, sql: sql }))}
-          />
+          <input
+              type="text"
+              className="gf-form-input"
+              placeholder="input project name"
+              value={project}
+              onChange={e => changeData({ project: e.currentTarget.value })}
+            />
+        </div>
+        <div className="gf-form-label">
+          Time Field
+        </div>
+        <div className="gf-form">
+          <input
+              type="text"
+              className="gf-form-input"
+              placeholder="input time field ame"
+              value={timeField}
+              onChange={e => changeData({ timeField: e.currentTarget.value })}
+            />
         </div>
       </div>
       <div className="gf-form gf-form--alt">
@@ -112,7 +132,7 @@ export const QueryEditor: ComponentType<Props> = ({ datasource, onChange, onRunQ
             showLineNumbers={true}
             showMiniMap={data.length > 100}
             value={sql}
-            onBlur={value => setData(JSON.stringify({ project: project, sql: value }))}
+            onBlur={value => changeData({ sql: value })}
           />
         </div>
       </div>
