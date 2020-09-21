@@ -36,7 +36,7 @@ export const QueryEditor: ComponentType<Props> = ({ datasource, onChange, onRunQ
     if (!!data) {
       obj = JSON.parse(data);
     }
-    setData(JSON.stringify({...obj, ...changed}));
+    setData(JSON.stringify({ ...obj, ...changed }));
   }
 
   React.useEffect(() => {
@@ -95,29 +95,25 @@ export const QueryEditor: ComponentType<Props> = ({ datasource, onChange, onRunQ
             }}
           />
         </div>
-        <div className="gf-form-label">
-          Project
-        </div>
+        <div className="gf-form-label">Project</div>
         <div className="gf-form">
           <input
-              type="text"
-              className="gf-form-input"
-              placeholder="input project name"
-              value={project}
-              onChange={e => changeData({ project: e.currentTarget.value })}
-            />
+            type="text"
+            className="gf-form-input"
+            placeholder="input project name"
+            value={project}
+            onChange={e => changeData({ project: e.currentTarget.value })}
+          />
         </div>
-        <div className="gf-form-label">
-          Time Field
-        </div>
+        <div className="gf-form-label">Time Field</div>
         <div className="gf-form">
           <input
-              type="text"
-              className="gf-form-input"
-              placeholder="input time field ame"
-              value={timeField}
-              onChange={e => changeData({ timeField: e.currentTarget.value })}
-            />
+            type="text"
+            className="gf-form-input"
+            placeholder="input time field ame"
+            value={timeField}
+            onChange={e => changeData({ timeField: e.currentTarget.value })}
+          />
         </div>
       </div>
       <div className="gf-form gf-form--alt">

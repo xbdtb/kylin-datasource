@@ -1,4 +1,4 @@
-import { DataQueryResponse, DataSourceApi, DataSourceInstanceSettings, dateTime } from '@grafana/data';
+import { DataQueryResponse, DataSourceApi, DataSourceInstanceSettings } from '@grafana/data';
 import { AnnotationEvent } from '@grafana/data/types/data';
 import { AnnotationQueryRequest } from '@grafana/data/types/datasource';
 import { getBackendSrv, getTemplateSrv } from '@grafana/runtime';
@@ -49,24 +49,37 @@ export class DataSource extends DataSourceApi<GrafanaQuery, GenericOptions> {
       const data: any = request.targets[i].data;
       let from = options.range.from;
       let to = options.range.to;
-      let sql = data.sql.replace('$__timeFilter', `${data.timeField} BETWEEN '${from.format('YYYY-MM-DD HH:mm:ss')}' AND '${to.format('YYYY-MM-DD HH:mm:ss')}'`);
+      let sql = data.sql.replace(
+        '$__timeFilter',
+        `${data.timeField} BETWEEN '${from.format('YYYY-MM-DD HH:mm:ss')}' AND '${to.format('YYYY-MM-DD HH:mm:ss')}'`
+      );
       const body = {
         project: data.project,
         sql: sql,
-      }
+      };
       const response = await this.doRequest({
         url: `${this.url}/api/query`,
         data: body,
         method: 'POST',
       });
-      for (let j = 0; j < response.data.results.length; j++) {
-        response.data.results[j][0] = parseInt(response.data.results[j][0], 10);
+      if (request.targets[i].type === 'table') {
+        const columns = response.data.columnMetas.map((col: any) => ({ text: col.name }));
+        resultData.push({
+          refId: request.targets[i].refId,
+          columns: columns,
+          rows: response.data.results,
+          target: response.data.columnMetas[0].label,
+        });
+      } else {
+        for (let j = 0; j < response.data.results.length; j++) {
+          response.data.results[j][0] = parseInt(response.data.results[j][0], 10);
+        }
+        resultData.push({
+          refId: request.targets[i].refId,
+          datapoints: response.data.results,
+          target: response.data.columnMetas[0].label,
+        });
       }
-      resultData.push({
-        refId: request.targets[i].refId,
-        datapoints: response.data.results,
-        target: response.data.columnMetas[0].label,
-      });
     }
     return { data: resultData };
   }
