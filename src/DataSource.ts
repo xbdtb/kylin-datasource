@@ -62,24 +62,20 @@ export class DataSource extends DataSourceApi<GrafanaQuery, GenericOptions> {
         data: body,
         method: 'POST',
       });
-      if (request.targets[i].type === 'table') {
-        const columns = response.data.columnMetas.map((col: any) => ({ text: col.name }));
-        resultData.push({
-          refId: request.targets[i].refId,
-          columns: columns,
-          rows: response.data.results,
-          target: response.data.columnMetas[0].label,
-        });
-      } else {
-        for (let j = 0; j < response.data.results.length; j++) {
+      const columns = response.data.columnMetas.map((col: any) => ({ text: col.name }));
+      for (let j = 0; j < response.data.results.length; j++) {
+        if (!!response.data.results[j][0]) {
           response.data.results[j][0] = parseInt(response.data.results[j][0], 10);
+        } else {
+          response.data.results[j][0] = 0;
         }
-        resultData.push({
-          refId: request.targets[i].refId,
-          datapoints: response.data.results,
-          target: response.data.columnMetas[0].label,
-        });
       }
+      resultData.push({
+        refId: request.targets[i].refId,
+        columns: columns,
+        datapoints: response.data.results,
+        target: response.data.columnMetas[0].name,
+      });
     }
     return { data: resultData };
   }

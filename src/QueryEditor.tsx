@@ -1,5 +1,5 @@
 import { QueryEditorProps, SelectableValue } from '@grafana/data';
-import { AsyncSelect, CodeEditor, Label, Select } from '@grafana/ui';
+import { AsyncSelect, CodeEditor, Select } from '@grafana/ui';
 import { find } from 'lodash';
 
 import React, { ComponentType } from 'react';
@@ -76,7 +76,7 @@ export const QueryEditor: ComponentType<Props> = ({ datasource, onChange, onRunQ
             prefix="Format As: "
             options={formatAsOptions}
             defaultValue={formatAs}
-            onChange={v => {
+            onChange={(v: any) => {
               setFormatAs(v);
             }}
           />
@@ -90,7 +90,7 @@ export const QueryEditor: ComponentType<Props> = ({ datasource, onChange, onRunQ
             placeholder="Select metric"
             allowCustomValue
             value={metric}
-            onChange={v => {
+            onChange={(v :any) => {
               setMetric(v);
             }}
           />
@@ -117,9 +117,7 @@ export const QueryEditor: ComponentType<Props> = ({ datasource, onChange, onRunQ
         </div>
       </div>
       <div className="gf-form gf-form--alt">
-        <div className="gf-form-label">
-          <Label>SQL</Label>
-        </div>
+        <div className="gf-form-label">SQL</div>
         <div className="gf-form">
           <CodeEditor
             width="800px"
@@ -128,7 +126,7 @@ export const QueryEditor: ComponentType<Props> = ({ datasource, onChange, onRunQ
             showLineNumbers={true}
             showMiniMap={data.length > 100}
             value={sql}
-            onBlur={value => changeData({ sql: value })}
+            onBlur={(value :any) => changeData({ sql: value })}
           />
         </div>
       </div>
