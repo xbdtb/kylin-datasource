@@ -1,4 +1,4 @@
-import { DataQueryResponse, DataSourceApi, DataSourceInstanceSettings } from '@grafana/data';
+import { DataQueryResponse, DataSourceApi, DataSourceInstanceSettings, dateTime } from '@grafana/data';
 import { AnnotationEvent } from '@grafana/data/types/data';
 import { AnnotationQueryRequest } from '@grafana/data/types/datasource';
 import { getBackendSrv, getTemplateSrv } from '@grafana/runtime';
@@ -15,6 +15,7 @@ import {
 } from './types';
 
 const supportedVariableTypes = ['adhoc', 'constant', 'custom', 'query'];
+const days: { [key: string]: number; } = {'7d': 7, '15d': 15, '30d': 30, '60d': 60, '90d': 90};
 
 export class DataSource extends DataSourceApi<GrafanaQuery, GenericOptions> {
   url: string;
@@ -47,7 +48,14 @@ export class DataSource extends DataSourceApi<GrafanaQuery, GenericOptions> {
     const resultData: any = [];
     for (let i = 0; i < request.targets.length; i++) {
       const data: any = request.targets[i].data;
-      let sql = data.sql.replace('$__timeFilter', `${data.timeField} BETWEEN '${options.range.from.format('YYYY-MM-DD HH:mm:ss')}' AND '${options.range.to.format('YYYY-MM-DD HH:mm:ss')}'`);
+      let from = options.range.from;
+      let to = options.range.to;
+      if (options.scopedVars.time) {
+        const k = options.scopedVars.time.value;
+        from = dateTime(to);
+        from.add(-days[k], 'days');
+      }
+      let sql = data.sql.replace('$__timeFilter', `${data.timeField} BETWEEN '${from.format('YYYY-MM-DD HH:mm:ss')}' AND '${to.format('YYYY-MM-DD HH:mm:ss')}'`);
       const body = {
         project: data.project,
         sql: sql,
