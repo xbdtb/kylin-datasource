@@ -62,7 +62,7 @@ export class DataSource extends DataSourceApi<GrafanaQuery, GenericOptions> {
         data: body,
         method: 'POST',
       });
-      const columns = response.data.columnMetas.map((col: any) => ({ text: col.name }));
+      const columns = response.data.columnMetas.map((col: any) => ({ text: col.label }));
       for (let j = 0; j < response.data.results.length; j++) {
         if (!!response.data.results[j][0]) {
           response.data.results[j][0] = parseInt(response.data.results[j][0], 10);
@@ -74,7 +74,7 @@ export class DataSource extends DataSourceApi<GrafanaQuery, GenericOptions> {
         refId: request.targets[i].refId,
         columns: columns,
         datapoints: response.data.results,
-        target: response.data.columnMetas[0].name,
+        target: response.data.columnMetas[0].label,
       });
     }
     return { data: resultData };

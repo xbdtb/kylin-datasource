@@ -90,7 +90,7 @@ export const QueryEditor: ComponentType<Props> = ({ datasource, onChange, onRunQ
             placeholder="Select metric"
             allowCustomValue
             value={metric}
-            onChange={(v :any) => {
+            onChange={(v: any) => {
               setMetric(v);
             }}
           />
@@ -126,7 +126,7 @@ export const QueryEditor: ComponentType<Props> = ({ datasource, onChange, onRunQ
             showLineNumbers={true}
             showMiniMap={data.length > 100}
             value={sql}
-            onBlur={(value :any) => changeData({ sql: value })}
+            onBlur={(value: any) => changeData({ sql: value })}
           />
         </div>
       </div>
