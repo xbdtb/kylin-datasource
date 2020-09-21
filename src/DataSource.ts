@@ -77,7 +77,32 @@ export class DataSource extends DataSourceApi<GrafanaQuery, GenericOptions> {
         target: response.data.columnMetas[0].label,
       });
     }
-    return { data: resultData };
+    const splitResultData = [];
+    for (let i = 0; i < resultData.length; i++) {
+      const data: any = request.targets[i].data;
+      const metricField: string = data.metricField;
+      if (!!metricField) {
+        let metricFieldIndex = 0;
+        for (let j = 0; j < resultData[i].columns.length; j++) {
+          const text: string = resultData[i].columns[j].text;
+          if (metricField.toLowerCase() === text.toLowerCase()) {
+            metricFieldIndex = j;
+            break;
+          }
+        }
+        for (let j = 0; j < resultData[i].datapoints.length; j++) {
+          splitResultData.push({
+            refId: request.targets[i].refId,
+            columns: resultData[i].columns,
+            datapoints: [resultData[i].datapoints[j]],
+            target: resultData[i].datapoints[j][metricFieldIndex],
+          });
+        }
+      } else {
+        splitResultData.push(resultData[i]);
+      }
+    }
+    return { data: splitResultData };
   }
 
   testDatasource(): Promise<any> {

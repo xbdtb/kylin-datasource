@@ -23,11 +23,13 @@ export const QueryEditor: ComponentType<Props> = ({ datasource, onChange, onRunQ
   const [data, setData] = React.useState(query.data ?? '');
   let project = '';
   let timeField = '';
+  let metricField = '';
   let sql = '';
   if (!!data) {
     const obj = JSON.parse(data);
     project = obj.project;
     timeField = obj.timeField;
+    metricField = obj.metricField;
     sql = obj.sql;
   }
 
@@ -110,9 +112,19 @@ export const QueryEditor: ComponentType<Props> = ({ datasource, onChange, onRunQ
           <input
             type="text"
             className="gf-form-input"
-            placeholder="input time field ame"
+            placeholder="input time field name"
             value={timeField}
             onChange={e => changeData({ timeField: e.currentTarget.value })}
+          />
+        </div>
+        <div className="gf-form-label">Metric Field</div>
+        <div className="gf-form">
+          <input
+            type="text"
+            className="gf-form-input"
+            placeholder="input metric field name"
+            value={metricField}
+            onChange={e => changeData({ metricField: e.currentTarget.value })}
           />
         </div>
       </div>
