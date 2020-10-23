@@ -64,7 +64,7 @@ export class DataSource extends DataSourceApi<GrafanaQuery, GenericOptions> {
       });
       const columns = response.data.columnMetas.map((col: any) => ({ text: col.label }));
       for (let j = 0; j < response.data.results.length; j++) {
-        if (!!response.data.results[j][0]) {
+        if (!!response.data.results[j][0] && request.targets[i].type !== 'table') {
           response.data.results[j][0] = parseFloat(response.data.results[j][0]);
         } else {
           response.data.results[j][0] = 0;
