@@ -27,7 +27,7 @@
             }
         ],
         "version": "0.2.1",
-        "updated": "2020-09-29"
+        "updated": "2020-10-23"
     },
     "dependencies": {
         "grafanaVersion": "7.1.x",

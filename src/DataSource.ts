@@ -79,6 +79,7 @@ export class DataSource extends DataSourceApi<GrafanaQuery, GenericOptions> {
     }
     const splitResultData = [];
     for (let i = 0; i < resultData.length; i++) {
+      console.log('request.targets[i]: ', request.targets[i]);
       const data: any = request.targets[i].data;
       const metricField: string = data.metricField;
       if (!!metricField) {
@@ -91,14 +92,20 @@ export class DataSource extends DataSourceApi<GrafanaQuery, GenericOptions> {
           }
         }
         for (let j = 0; j < resultData[i].datapoints.length; j++) {
-          splitResultData.push({
+          const pushItem: any = {
             refId: request.targets[i].refId,
             columns: resultData[i].columns,
-            datapoints: [resultData[i].datapoints[j]],
             target: resultData[i].datapoints[j][metricFieldIndex],
-          });
+          };
+          const fieldName = request.targets[i].type === 'table' ? 'rows' : 'datapoints';
+          pushItem[fieldName] = [resultData[i].datapoints[j]];
+          splitResultData.push(pushItem);
         }
       } else {
+        if (request.targets[i].type === 'table') {
+          resultData[i]['rows'] = resultData[i]['datapoints'];
+          delete resultData[i]['datapoints'];
+        }
         splitResultData.push(resultData[i]);
       }
     }
